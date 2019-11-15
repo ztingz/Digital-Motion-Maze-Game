@@ -1,0 +1,14 @@
+{
+    "StarTime": 45,
+    "StarStep": 5,
+    "Matrix": {
+        "Order": 3,
+        "Content": [
+            [1, 0, 1],
+            [1, 1, 0],
+            [0, 1, 1]
+        ]
+    },
+    "Multiplier": [-1, 1, 2, 0.5],
+    "Result": 2
+}
