@@ -62,7 +62,7 @@ public class RoundxController : MonoSingleton<RoundxController>
     }
 
     #region 方法
-    public void DrawMainLayout(bool instantiate)
+    public void DrawMainLayout(bool needInstantiate)
     {
         //移动步长
         int move_unit = _cellSize + 2 * _gapSize;
@@ -76,16 +76,16 @@ public class RoundxController : MonoSingleton<RoundxController>
         {
             for (int j = 0; j < _layoutOrder; ++j)
             {
-                string flag_name = string.Format(FLAG_KEY, Enum.GetName(flagPosition.GetType(), flagPosition), j);
-                if (instantiate) _flags.Add(flag_name, Instantiate(FlagPFB, _root));
-                _flags[flag_name].name = flag_name;
+                string flagKey = string.Format(FLAG_KEY, Enum.GetName(flagPosition.GetType(), flagPosition), j);
+                if (needInstantiate) _flags.Add(flagKey, Instantiate(FlagPFB, _root));
+                _flags[flagKey].name = flagKey;
 
                 if (flagPosition == FlagPosition.L || flagPosition == FlagPosition.R)
-                    _flags[flag_name].GetComponent<FlagView>().Dimension = Dimension.ROW;
-                else _flags[flag_name].GetComponent<FlagView>().Dimension = Dimension.COL;
+                    _flags[flagKey].GetComponent<FlagView>().Dimension = Dimension.ROW;
+                else _flags[flagKey].GetComponent<FlagView>().Dimension = Dimension.COL;
 
-                _flags[flag_name].GetComponent<FlagView>().FlagPosition = flagPosition;
-                _flags[flag_name].GetComponent<FlagView>().Index = j;
+                _flags[flagKey].GetComponent<FlagView>().FlagPosition = flagPosition;
+                _flags[flagKey].GetComponent<FlagView>().Index = j;
             }
         }
 
@@ -95,12 +95,13 @@ public class RoundxController : MonoSingleton<RoundxController>
             for (byte j = 0; j < _layoutOrder; ++j)
             {
                 string cellKey = string.Format(CELL_KEY, i, j);
-                if (instantiate) _cells.Add(cellKey, Instantiate(CellPFB, _root));//实例化预制体
+                if (needInstantiate) _cells.Add(cellKey, Instantiate(CellPFB, _root));//实例化预制体
                 _cells[cellKey].name = cellKey;
 
                 //设置格子大小
                 foreach (RectTransform rt in _cells[cellKey].GetComponentsInChildren<RectTransform>())
                     rt.sizeDelta = size;
+
                 _cells[cellKey].GetComponent<CellView>().Fraction = new Fraction(_round.Matrix.Content[i, j]);//设置格子内容
                 _cells[cellKey].GetComponent<CellView>().RowNum = i;
                 _cells[cellKey].GetComponent<CellView>().ColNum = j;
@@ -198,14 +199,14 @@ public class RoundxController : MonoSingleton<RoundxController>
             //可以行展开
             if (pb.dimension == Dimension.ROW && MatrixTransform.CanRowExpande(_cells, _layoutOrder, pb.index))
             {
-                MatrixTransform.Cofactor(_cells, _layoutOrder, pa.row, pa.col);
+                MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, pa.col);
                 --_layoutOrder;
                 DrawMainLayout(false);
             }
             //可以列展开
             else if (pb.dimension == Dimension.COL && MatrixTransform.CanColExpande(_cells, _layoutOrder, pb.index))
             {
-                MatrixTransform.Cofactor(_cells, _layoutOrder, pa.row, pa.col);
+                MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, pa.col);
                 --_layoutOrder;
                 DrawMainLayout(false);
             }

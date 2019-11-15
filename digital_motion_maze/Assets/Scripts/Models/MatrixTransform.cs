@@ -142,7 +142,7 @@ public static class MatrixTransform
     // }
 
     //代数余子式
-    public static Fraction Cofactor(Dictionary<string, GameObject> cells, int order, int row, int col)
+    public static Fraction Cofactor(Dictionary<string, GameObject> cells, Dictionary<string, GameObject> flags, int order, int row, int col)
     {
         Debug.Log("Cofactor");
         if (row >= order || col >= order)
@@ -152,26 +152,67 @@ public static class MatrixTransform
         Fraction cellFraction = cells[cellKey].GetComponent<CellView>().Fraction;
 
         for (int i = 0; i < order; ++i)
-            for (int j = 0; j < order; ++j)
-                if (i == row || j == col)
-                {
-                    string cellRemoveKey = string.Format(RoundxController.CELL_KEY, i, j);
-                    GameObject.Destroy(cells[cellRemoveKey]);
-                    cells.Remove(cellRemoveKey);
-                }
-
-        for (int i = 0; i < order - 1; ++i)
-            for (int j = 0; j < order - 1; ++j)
+        {
+            if (i == row)
             {
-                string thisKey = string.Format(RoundxController.CELL_KEY, i, j);
-                if (cells.ContainsKey(thisKey)) continue;
-                if (!cells.ContainsKey(thisKey))
+                for (int k = i; k < order; ++k)//k->row
                 {
-                    string offsetKey = string.Format(RoundxController.CELL_KEY, i, j + 1);
-                    cells.Add(thisKey, cells[offsetKey]);
-                    cells.Remove(offsetKey);
+                    for (int j = 0; j < order; ++j)
+                    {
+                        if (k == order - 1)
+                        {
+                            string cellRemoveKey = string.Format(RoundxController.CELL_KEY, order - 1, j);
+                            GameObject.Destroy(cells[cellRemoveKey]);
+                            cells.Remove(cellRemoveKey);
+                            continue;
+                        }
+                        string thisKey = string.Format(RoundxController.CELL_KEY, k, j);
+                        string nextKey = string.Format(RoundxController.CELL_KEY, k + 1, j);
+                        cells[thisKey].GetComponent<CellView>().Fraction = cells[nextKey].GetComponent<CellView>().Fraction;
+                    }
                 }
+                break;
             }
+        }
+
+        for (int j = 0; j < order; ++j)
+        {
+            if (j == col)
+            {
+                for (int k = j; k < order; ++k)//k->col
+                {
+                    for (int i = 0; i < order - 1; ++i)
+                    {
+                        if (k == order - 1)
+                        {
+                            string removeKey = string.Format(RoundxController.CELL_KEY, i, order - 1);
+                            GameObject.Destroy(cells[removeKey]);
+                            cells.Remove(removeKey);
+                            continue;
+                        }
+                        string thisKey = string.Format(RoundxController.CELL_KEY, i, k);
+                        string nextKey = string.Format(RoundxController.CELL_KEY, i, k + 1);
+                        cells[thisKey].GetComponent<CellView>().Fraction = cells[nextKey].GetComponent<CellView>().Fraction;
+                    }
+                }
+                break;
+            }
+        }
+        string flagLRemoveKey = string.Format(RoundxController.FLAG_KEY, FlagPosition.L, order - 1);
+        GameObject.Destroy(flags[flagLRemoveKey]);
+        flags.Remove(flagLRemoveKey);
+
+        string flagRRemoveKey = string.Format(RoundxController.FLAG_KEY, FlagPosition.R, order - 1);
+        GameObject.Destroy(flags[flagRRemoveKey]);
+        flags.Remove(flagRRemoveKey);
+
+        string flagURemoveKey = string.Format(RoundxController.FLAG_KEY, FlagPosition.U, order - 1);
+        GameObject.Destroy(flags[flagURemoveKey]);
+        flags.Remove(flagURemoveKey);
+
+        string flagDRemoveKey = string.Format(RoundxController.FLAG_KEY, FlagPosition.D, order - 1);
+        GameObject.Destroy(flags[flagDRemoveKey]);
+        flags.Remove(flagDRemoveKey);
 
         //计算代数, 并返回结果
         if ((row + col) % 2 == 0) return cellFraction;
