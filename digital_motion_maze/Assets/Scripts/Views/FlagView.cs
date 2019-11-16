@@ -5,17 +5,13 @@ public class FlagView : MonoBehaviour,
                         IBeginDragHandler, IDragHandler, IEndDragHandler,
                         IPointerEnterHandler, IPointerExitHandler
 {
+    //数据
     public Dimension Dimension;
     public FlagPosition FlagPosition;
     public int Index;
 
-    private RectTransform canvas;//得到canvas的ugui坐标
-    private RectTransform efRect;//得到元素标记的ugui坐标
-
     private void Start()
     {
-        efRect = GetComponent<RectTransform>();
-        canvas = GameObject.Find("Canvas").GetComponent<RectTransform>();
     }
 
     //开始拖曳

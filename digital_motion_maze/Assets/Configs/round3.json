@@ -2,7 +2,7 @@
     "StarTime": 45,
     "StarStep": 5,
     "Matrix": {
-        "Order": 3,
+        "Order": 4,
         "Content": [
             [1, 0, 1, 1],
             [1, 1, 0, 5],
