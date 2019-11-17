@@ -8,6 +8,6 @@
             [1, 1]
         ]
     },
-    "Multiplier": [-1, 1, 2, 0.5],
+    "Multiplier": [-1, 2, 0.5],
     "Result": 1
 }

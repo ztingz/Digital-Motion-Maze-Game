@@ -4,7 +4,9 @@ using Newtonsoft.Json;
 
 public static class ConfigManager
 {
+    private const string CONFIG_DIR_PATH = "/Configs/";
     private const string SETTINGS_PATH_TAIL = "/Configs/settings.json";
+    private const string ROUNDS_PATH_TAIL = "/Configs/rounds.json";
     private const string ROUND_PATH_FORMATE = "/Configs/round{0}.json";
 
     //从配置文件载入玩家配置
@@ -28,7 +30,13 @@ public static class ConfigManager
         Debug.Log(json);
     }
 
-    //从配置文件载入关卡信息
+    //从配置文件载入关卡数量信息
+    public static int LoadRoundNumber()
+    {
+        return Directory.GetFileSystemEntries(Application.dataPath + CONFIG_DIR_PATH,"round*.json").Length;
+    }
+
+    //从配置文件载入某一关卡的信息
     public static Round LoadRoundFromJsonFile(int num)
     {
         // Debug.Log(Resources.Load<TextAsset>(string.Format(ROUND_PATH_FORMATE, num)));

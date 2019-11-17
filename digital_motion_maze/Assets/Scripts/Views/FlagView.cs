@@ -18,15 +18,18 @@ public class FlagView : MonoBehaviour,
     public void OnBeginDrag(PointerEventData eventData)
     {
         // Debug.Log("开始拖曳");
-        GameObject beginObj = eventData.hovered[0];
-        // Debug.Log("OnBeginDrag pointerDrag:" + eventData.pointerDrag.name);
     }
 
     //拖曳中
     public void OnDrag(PointerEventData eventData)
     {
         // Debug.Log("拖曳中");
-        // Debug.Log("OnDrag pointerDrag:" + eventData.pointerDrag.name);
+        //         //获取到鼠标的位置(鼠标水平的输入和竖直的输入以及距离)
+        //         Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
+        //         //物体的位置，屏幕坐标转换为世界坐标
+        //         Vector3 objectPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        //         //把鼠标位置传给物体
+        //         transform.position = objectPosition;
     }
 
     //结束拖曳

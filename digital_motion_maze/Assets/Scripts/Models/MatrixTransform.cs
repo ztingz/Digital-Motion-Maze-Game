@@ -97,30 +97,38 @@ public static class MatrixTransform
             }
     }
 
-    public static bool CanRowExpande(Dictionary<string, GameObject> cells, int order, int index)
+    public static int CanRowExpande(Dictionary<string, GameObject> cells, int order, int index)
     {
         Debug.Log("CanRowExpande");
-        int count = 0;
+        int count = 0, col = -1;
         for (int j = 0; j < order; ++j)
         {
             string cellKey = string.Format(RoundxController.CELL_KEY, index, j);
-            if (cells[cellKey].GetComponent<CellView>().Fraction != new Fraction(0)) ++count;
-            if (count > 1) return false;
+            if (cells[cellKey].GetComponent<CellView>().Fraction != new Fraction(0))
+            {
+                col = j;
+                ++count;
+            }
+            if (count > 1) return -1;
         }
-        return true;
+        return col;
     }
 
-    public static bool CanColExpande(Dictionary<string, GameObject> cells, int order, int index)
+    public static int CanColExpande(Dictionary<string, GameObject> cells, int order, int index)
     {
         Debug.Log("CanColExpande");
-        int count = 0;
+        int count = 0, row = -1;
         for (int j = 0; j < order; ++j)
         {
             string cellKey = string.Format(RoundxController.CELL_KEY, j, index);
-            if (cells[cellKey].GetComponent<CellView>().Fraction != new Fraction(0)) ++count;
-            if (count > 1) return false;
+            if (cells[cellKey].GetComponent<CellView>().Fraction != new Fraction(0))
+            {
+                row = j;
+                ++count;
+            }
+            if (count > 1) return -1;
         }
-        return true;
+        return row;
     }
 
     //行(列)展开
@@ -148,6 +156,8 @@ public static class MatrixTransform
         if (row >= order || col >= order)
             throw new System.IndexOutOfRangeException("Cofactor的行(列)标超过阶数");
 
+        int rowKey, colKey;
+
         string cellKey = string.Format(RoundxController.CELL_KEY, row, col);
         Fraction cellFraction = cells[cellKey].GetComponent<CellView>().Fraction;
 
@@ -155,6 +165,7 @@ public static class MatrixTransform
         {
             if (i == row)
             {
+                rowKey = i;
                 for (int k = i; k < order; ++k)//k->row
                 {
                     for (int j = 0; j < order; ++j)

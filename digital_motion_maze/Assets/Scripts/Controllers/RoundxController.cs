@@ -20,9 +20,10 @@ public class RoundxController : MonoSingleton<RoundxController>
     private Vector2 _initDistance;//初始偏移量
 
     //场景物体
-    public GameObject Title;
+    public GameObject TitleShowNumText;
     public GameObject Time;
     public GameObject Step;
+    public GameObject Result;
     public GameObject CellRoot;
     public GameObject FlagRoot;
     public GameObject NumRoot;
@@ -43,7 +44,7 @@ public class RoundxController : MonoSingleton<RoundxController>
 
     protected virtual void Awake()
     {
-        _round = ConfigManager.LoadRoundFromJsonFile(3);
+        _round = ConfigManager.LoadRoundFromJsonFile(SelectController.SelectNum);
         _cells = new Dictionary<string, GameObject>();
         _flags = new Dictionary<string, GameObject>();
         _nums = new List<GameObject>();
@@ -51,10 +52,13 @@ public class RoundxController : MonoSingleton<RoundxController>
 
     private void Start()
     {
+        TitleShowNumText.GetComponent<BaseCellView>().Fraction = new Fraction(SelectController.SelectNum);
         Draw(_round.Matrix.Order, true);
         DrawNums();
+        Result.GetComponent<BaseCellView>().Fraction = new Fraction(1);
     }
 
+    #region 方法
     //计算布局
     private void InitLayout(int order)
     {
@@ -68,12 +72,18 @@ public class RoundxController : MonoSingleton<RoundxController>
         _initDistance = new Vector2(-(_layoutOrder / 2) * _moveUnit, (_layoutOrder / 2) * _moveUnit);
     }
 
-    #region 方法
     private void Draw(int order, bool needInstantiate)
     {
-        InitLayout(order);
-        DrawFlags(needInstantiate);
-        DrawCells(needInstantiate);
+        if (order != 0)
+        {
+            InitLayout(order);
+            DrawFlags(needInstantiate);
+            DrawCells(needInstantiate);
+        }
+        else
+        {
+
+        }
     }
 
     private void DrawCells(bool needInstantiate)
@@ -192,6 +202,7 @@ public class RoundxController : MonoSingleton<RoundxController>
             {
                 MatrixTransform.Swap(_cells, _layoutOrder, pa.dimension, pa.index, pb.index);
                 Step.GetComponent<StepView>().increase();
+                Result.GetComponent<BaseCellView>().Fraction *= -1;
                 return;
             }//互换
         }
@@ -232,40 +243,30 @@ public class RoundxController : MonoSingleton<RoundxController>
             var pb = PraseFlag(b);
 
             //可以行展开
-            if (pb.dimension == Dimension.ROW && MatrixTransform.CanRowExpande(_cells, _layoutOrder, pb.index))
+            if (pb.dimension == Dimension.ROW)
             {
-                MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, pa.col);
-                Draw(_layoutOrder - 1, false);
-                Step.GetComponent<StepView>().increase();
-                return;
+                int index = MatrixTransform.CanRowExpande(_cells, _layoutOrder, pb.index);
+                if (index != -1)
+                {
+                    Result.GetComponent<BaseCellView>().Fraction *= MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, index);
+                    Draw(_layoutOrder - 1, false);
+                    Step.GetComponent<StepView>().increase();
+                    return;
+                }
             }
             //可以列展开
-            else if (pb.dimension == Dimension.COL && MatrixTransform.CanColExpande(_cells, _layoutOrder, pb.index))
+            else if (pb.dimension == Dimension.COL)
             {
-                MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, pa.col);
-                Draw(_layoutOrder - 1, false);
-                Step.GetComponent<StepView>().increase();
-                return;
+                int index = MatrixTransform.CanColExpande(_cells, _layoutOrder, pb.index);
+                if (index != -1)
+                {
+                    Result.GetComponent<BaseCellView>().Fraction *= MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, index, pa.col);
+                    Draw(_layoutOrder - 1, false);
+                    Step.GetComponent<StepView>().increase();
+                    return;
+                }
             }
         }
-
-        // else if (_cells.ContainsValue(a) && b.name.Contains("Canvas"))//展开?
-        // {
-        //     var pa = PraseCell(a);
-
-        //     //可以行展开
-        //     if (MatrixTransform.CanRowExpande(_cells, _layoutOrder, pa.col))
-        //     {
-        //         MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, pa.col);
-        //         Draw(_layoutOrder - 1, false);
-        //     }
-        //     //可以列展开
-        //     else if (MatrixTransform.CanColExpande(_cells, _layoutOrder, pa.row))
-        //     {
-        //         MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, pa.col);
-        //         Draw(_layoutOrder - 1, false);
-        //     }
-        // }
     }
     #endregion
 }

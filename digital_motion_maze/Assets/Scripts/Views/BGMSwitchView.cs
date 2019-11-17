@@ -32,16 +32,6 @@ public class BGMSwitchView : MonoBehaviour, IPointerClickHandler
 
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {
-        // Round round = ConfigManager.LoadRoundFromJsonFile(1);
-        // Debug.Log("round.Multiplier=" + round.Multiplier);
-        // fraction.Fraction fraction = new fraction.Fraction(2.5);
-        // Debug.Log(fraction.Numerator);
-        // Debug.Log(fraction.Denominator);
-        // Debug.Log(fraction.DecimalValue);
-        Debug.Log("R[1]".Split('[')[0]);
-        Debug.Log("R[1]".Split(']')[0].Split('[')[1]);
-        Debug.Log("R[1]" == "R[1]");
-
         if (_bgm.isPlaying)
         {
             _bgm.Pause();
