@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public static class ConfigManager
 {
     private const string CONFIG_DIR_PATH = "/Configs/";
-    private const string SETTINGS_PATH_TAIL = "/Configs/settings.json";
+    private const string SETTINGS_PATH = "/Configs/settings.json";
     private const string ROUNDS_PATH = "/Configs/rounds.json";
     private const string ROUND_PATH_FORMATE = "/Configs/round{0}.json";
     private const string RECORDS_PATH = "/Configs/records.json";
@@ -65,22 +65,20 @@ public static class ConfigManager
     //从配置文件载入玩家配置
     public static PlayerConfig LoadSettingsFromJsonFile()
     {
-        Resources.Load(SETTINGS_PATH_TAIL).ToString();
         string json = File.ReadAllText(
-            UnityEngine.Application.dataPath + SETTINGS_PATH_TAIL,
+            UnityEngine.Application.dataPath + SETTINGS_PATH,
             System.Text.Encoding.UTF8
         );
-        return JsonUtility.FromJson<PlayerConfig>(json);
+        return JsonConvert.DeserializeObject<PlayerConfig>(json);
     }
 
     public static void SaveSettingsFromJsonFile(PlayerConfig playerConfig)
     {
-        string json = JsonUtility.ToJson(playerConfig, true);//易读格式
+        string json = JsonConvert.SerializeObject(playerConfig);
         File.WriteAllText(
-            UnityEngine.Application.dataPath + SETTINGS_PATH_TAIL,
+            UnityEngine.Application.dataPath + SETTINGS_PATH,
             json, System.Text.Encoding.UTF8
         );
-        Debug.Log(json);
     }
 
     //从配置文件载入关卡数量信息
@@ -97,5 +95,10 @@ public static class ConfigManager
             System.Text.Encoding.UTF8
         );
         return JsonConvert.DeserializeObject<Round>(json);
+    }
+
+    public static void ClearPlayerConfig()
+    {
+        File.WriteAllText(UnityEngine.Application.dataPath + RECORDS_PATH, "", System.Text.Encoding.UTF8);
     }
 }

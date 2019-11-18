@@ -9,7 +9,6 @@ public class BGMSwitchView : MonoBehaviour, IPointerClickHandler
     public Sprite PauseSprite;
 
     private Image _image;
-    private AudioSource _bgm;
 
     private void Awake()
     {
@@ -21,25 +20,24 @@ public class BGMSwitchView : MonoBehaviour, IPointerClickHandler
             globleObj = Instantiate(GlobalPrefab);
             globleObj.name = GlobalPrefab.name;
         }
-        _bgm = globleObj.GetComponent<AudioSource>();
     }
 
     private void Start()
     {
-        if (_bgm.isPlaying) _image.sprite = PlaySprite;
+        if (GlobalController.BGMPlay) _image.sprite = PlaySprite;
         else _image.sprite = PauseSprite;
     }
 
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {
-        if (_bgm.isPlaying)
+        if (GlobalController.BGMPlay)
         {
-            _bgm.Pause();
+            GlobalController.BGMPlay = false;
             _image.sprite = PauseSprite;
         }
         else
         {
-            _bgm.Play();
+            GlobalController.BGMPlay = true;
             _image.sprite = PlaySprite;
         }
     }

@@ -3,7 +3,35 @@ using UnityEngine.SceneManagement;
 
 public class GlobalController : MonoBehaviour
 {
-    protected void Awake() { DontDestroyOnLoad(this.gameObject); }
+    private static PlayerConfig _config;
+    private static AudioSource BGM;
+    public static bool BGMPlay
+    {
+        get { return _config.BgmAutoPlay; }
+        set
+        {
+            _config.BgmAutoPlay = value;
+            if (_config.BgmAutoPlay) BGM.Play();
+            else BGM.Pause();
+        }
+    }
+    protected void Awake()
+    {
+        _config = ConfigManager.LoadSettingsFromJsonFile();
+        BGM = GetComponent<AudioSource>();
+        DontDestroyOnLoad(this.gameObject);
+    }
+
+    private void Start()
+    {
+        if (_config.BgmAutoPlay) BGM.Play();
+        else BGM.Pause();
+    }
+
+    private void OnApplicationQuit()
+    {
+        ConfigManager.SaveSettingsFromJsonFile(_config);
+    }
 
     public void ToExit() { Application.Quit(); }
 
