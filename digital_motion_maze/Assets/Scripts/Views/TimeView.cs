@@ -37,7 +37,7 @@ public class TimeView : MonoBehaviour
         if (_isRunning) Second += Time.deltaTime;
     }
 
-    public void Pause() { _isRunning = true; }
+    public void Pause() { _isRunning = false; }
 
     public void GoOn() { _isRunning = true; }
 }

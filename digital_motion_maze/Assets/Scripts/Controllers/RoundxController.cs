@@ -27,24 +27,26 @@ public class RoundxController : MonoSingleton<RoundxController>
     public GameObject CellRoot;
     public GameObject FlagRoot;
     public GameObject NumRoot;
+    public GameObject AccountsDialog;
 
     //预制体
     public GameObject CellPFB;//格子预制体
     public GameObject FlagPFB;//行列标记预制体
 
     //关卡数据
+    public static int SelectRoundIndex = 1;//全局用于传递参数，而后初始化_round
     private Round _round;//只用于初始化关卡, 不更新
     public const string CELL_KEY = "[{0},{1}]";//e.g.[0,0]
     public const string FLAG_KEY = "{0}[{1}]";//e.g.R[0]
     public const string NUM_KEY = "N[{0}]";//e.g.R[0]
     private Dictionary<string, GameObject> _cells;//格子字典
     private Dictionary<string, GameObject> _flags;//标记字典
-    protected List<GameObject> _nums;//乘数列表
+    private List<GameObject> _nums;//乘数列表
     #endregion
 
     protected virtual void Awake()
     {
-        _round = ConfigManager.LoadRoundFromJsonFile(SelectController.SelectNum);
+        _round = ConfigManager.LoadRoundFromJsonFile(SelectRoundIndex);
         _cells = new Dictionary<string, GameObject>();
         _flags = new Dictionary<string, GameObject>();
         _nums = new List<GameObject>();
@@ -52,7 +54,7 @@ public class RoundxController : MonoSingleton<RoundxController>
 
     private void Start()
     {
-        TitleShowNumText.GetComponent<BaseCellView>().Fraction = new Fraction(SelectController.SelectNum);
+        TitleShowNumText.GetComponent<BaseCellView>().Fraction = new Fraction(SelectRoundIndex + 1);
         Draw(_round.Matrix.Order, true);
         DrawNums();
         Result.GetComponent<BaseCellView>().Fraction = new Fraction(1);
@@ -80,10 +82,7 @@ public class RoundxController : MonoSingleton<RoundxController>
             DrawFlags(needInstantiate);
             DrawCells(needInstantiate);
         }
-        else
-        {
-
-        }
+        else Accounts();
     }
 
     private void DrawCells(bool needInstantiate)
@@ -182,6 +181,19 @@ public class RoundxController : MonoSingleton<RoundxController>
         return (g.GetComponent<CellView>().RowNum, g.GetComponent<CellView>().ColNum);
     }
 
+    private void Accounts()
+    {
+        AccountsDialog.SetActive(true);
+        TimeView timeView = Time.GetComponent<TimeView>();
+        timeView.Pause();
+        int starNum = 1;
+        if (_round.StarStep >= Step.GetComponent<StepView>().Step) { ++starNum; }
+        if (_round.StarTime >= timeView.Second) { ++starNum; }
+        Record record = new Record(SelectRoundIndex, starNum, (int)timeView.Second, Step.GetComponent<StepView>().Step);
+        ConfigManager.SaveRecord(record);
+        AccountsDialog.GetComponent<AccountsDialogView>().SetInfo(_round, record);
+    }
+
     public void HandleEvent(GameObject a, GameObject b)
     {
         if (a == b) return;
@@ -249,8 +261,8 @@ public class RoundxController : MonoSingleton<RoundxController>
                 if (index != -1)
                 {
                     Result.GetComponent<BaseCellView>().Fraction *= MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, pa.row, index);
-                    Draw(_layoutOrder - 1, false);
                     Step.GetComponent<StepView>().increase();
+                    Draw(_layoutOrder - 1, false);
                     return;
                 }
             }
@@ -261,8 +273,8 @@ public class RoundxController : MonoSingleton<RoundxController>
                 if (index != -1)
                 {
                     Result.GetComponent<BaseCellView>().Fraction *= MatrixTransform.Cofactor(_cells, _flags, _layoutOrder, index, pa.col);
-                    Draw(_layoutOrder - 1, false);
                     Step.GetComponent<StepView>().increase();
+                    Draw(_layoutOrder - 1, false);
                     return;
                 }
             }

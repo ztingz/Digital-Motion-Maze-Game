@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b436a448eb5a6a6448c36b61542442dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RoundRoot: {fileID: 735222465}
+  RoundRoot: {fileID: 735222466}
   RoundNumberPFB: {fileID: 838995036975852622, guid: 8be202154c3de46478d116cfa995f724,
     type: 3}
 --- !u!114 &80391408
@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 127039859}
   - component: {fileID: 127039858}
   - component: {fileID: 127039857}
+  - component: {fileID: 127039861}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -305,6 +306,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &127039861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127039856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd69c353d107bf44794940eb621b52b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  standard_width: 1080
+  standard_height: 1920
+  device_width: 0
+  device_height: 0
+  adjustor: 0
 --- !u!1 &190183215
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,7 +531,7 @@ PrefabInstance:
     - target: {fileID: 6093218337438744101, guid: 343097d028035c440a6a923c78480321,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ToHome
+      value: ToMenu
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 343097d028035c440a6a923c78480321, type: 3}

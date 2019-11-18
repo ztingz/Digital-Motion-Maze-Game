@@ -100,7 +100,7 @@ public static class MatrixTransform
     public static int CanRowExpande(Dictionary<string, GameObject> cells, int order, int index)
     {
         Debug.Log("CanRowExpande");
-        int count = 0, col = -1;
+        int count = 0, col = 0;
         for (int j = 0; j < order; ++j)
         {
             string cellKey = string.Format(RoundxController.CELL_KEY, index, j);
@@ -117,7 +117,7 @@ public static class MatrixTransform
     public static int CanColExpande(Dictionary<string, GameObject> cells, int order, int index)
     {
         Debug.Log("CanColExpande");
-        int count = 0, row = -1;
+        int count = 0, row = 0;
         for (int j = 0; j < order; ++j)
         {
             string cellKey = string.Format(RoundxController.CELL_KEY, j, index);

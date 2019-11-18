@@ -14,7 +14,7 @@ public class CellView : BaseCellView
         if (eventData.hovered.Count != 0)
         {
             foreach (GameObject o in eventData.hovered)
-                if (o.name.Contains("[") || o.name.Contains("Canvas"))
+                if (o.name.Contains("["))
                 {
                     Debug.Log("from " + gameObject.name + " to " + o.name);
                     RoundxController.Instance.HandleEvent(gameObject, o);
