@@ -6,7 +6,7 @@ public class SelectController : MonoBehaviour
 {
     //数据
     private List<Record> _roundRecords;
-    private int _roundNum;
+    private int _roundIndexNum;
 
     //场景物体
     public RectTransform RoundRoot;
@@ -17,11 +17,10 @@ public class SelectController : MonoBehaviour
 
     private void Awake()
     {
-        _roundNum = ConfigManager.LoadRoundNumber();
+        _roundIndexNum = ConfigManager.LoadRoundNumber();
         _roundRecords = ConfigManager.LoadRecords();
         _rounds = new List<GameObject>();
     }
-
     private void Start()
     {
         Draw();
@@ -42,15 +41,18 @@ public class SelectController : MonoBehaviour
                 _rounds[_roundRecords.IndexOf(record)].GetComponent<RoundCellView>().Mask.SetActive(false);
                 ++unLockIndex;
             }
-        _rounds.Add(Instantiate(RoundNumberPFB, RoundRoot));
-        _rounds[unLockIndex].name = (unLockIndex + 1).ToString();
-        _rounds[unLockIndex].GetComponent<RoundCellView>().Record = new Record(unLockIndex);
-        int index = unLockIndex;
-        _rounds[unLockIndex].GetComponent<Button>().onClick.AddListener(() => GlobalController.SToRound(index));
-        _rounds[unLockIndex].GetComponent<RoundCellView>().Mask.SetActive(false);
-        ++unLockIndex;
+        if (unLockIndex < _roundIndexNum)
+        {
+            _rounds.Add(Instantiate(RoundNumberPFB, RoundRoot));
+            _rounds[unLockIndex].name = (unLockIndex + 1).ToString();
+            _rounds[unLockIndex].GetComponent<RoundCellView>().Record = new Record(unLockIndex);
+            int index = unLockIndex;
+            _rounds[unLockIndex].GetComponent<Button>().onClick.AddListener(() => GlobalController.SToRound(index));
+            _rounds[unLockIndex].GetComponent<RoundCellView>().Mask.SetActive(false);
+            ++unLockIndex;
+        }
         //未解锁关卡
-        for (int i = unLockIndex; i < _roundNum; ++i)
+        for (int i = unLockIndex; i < _roundIndexNum; ++i)
         {
             _rounds.Add(Instantiate(RoundNumberPFB, RoundRoot));
             _rounds[i].name = (i + 1).ToString();

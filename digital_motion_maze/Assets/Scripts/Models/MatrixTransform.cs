@@ -156,7 +156,7 @@ public static class MatrixTransform
         if (row >= order || col >= order)
             throw new System.IndexOutOfRangeException("Cofactor的行(列)标超过阶数");
 
-        int rowKey, colKey;
+        int rowKey;//colKey;
 
         string cellKey = string.Format(RoundxController.CELL_KEY, row, col);
         Fraction cellFraction = cells[cellKey].GetComponent<CellView>().Fraction;

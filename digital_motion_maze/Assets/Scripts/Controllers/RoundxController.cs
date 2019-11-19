@@ -219,6 +219,27 @@ public class RoundxController : MonoSingleton<RoundxController>
             }//互换
         }
 
+        if (_cells.ContainsValue(a) && _cells.ContainsValue(b))//互换
+        {
+            var pa = PraseCell(a);
+            var pb = PraseCell(b);
+
+            if (pa.col == pb.col && pa.row != pb.row)
+            {
+                MatrixTransform.Swap(_cells, _layoutOrder, Dimension.ROW, pa.row, pb.row);
+                Step.GetComponent<StepView>().increase();
+                Result.GetComponent<BaseCellView>().Fraction *= -1;
+                return;
+            }
+            else if (pa.col != pb.col && pa.row == pb.row)
+            {
+                MatrixTransform.Swap(_cells, _layoutOrder, Dimension.COL, pa.col, pb.col);
+                Step.GetComponent<StepView>().increase();
+                Result.GetComponent<BaseCellView>().Fraction *= -1;
+                return;
+            }
+        }
+
         else if (_flags.ContainsValue(a) && _cells.ContainsValue(b))
         {
             var pa = PraseFlag(a);
