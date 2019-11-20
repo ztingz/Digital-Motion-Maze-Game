@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class FlagView : MonoBehaviour,
                         IBeginDragHandler, IDragHandler, IEndDragHandler,
@@ -10,26 +11,34 @@ public class FlagView : MonoBehaviour,
     public FlagPosition FlagPosition;
     public int Index;
 
-    private void Start()
+    public Image Background;
+    private LineRenderer _line;
+    private static Color _defaultColor;
+    private static Color _activeColor = Color.black;
+
+    private void Awake()
     {
+        _line = GetComponent<LineRenderer>();
+        _defaultColor = Background.color;
     }
 
     //开始拖曳
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // Debug.Log("开始拖曳");
+        Background.color = _activeColor;
+        _line.enabled = true;
+        _line.SetPosition(0, transform.position);
+        // Debug.Log("开始拖曳 " + transform.position);
     }
 
     //拖曳中
     public void OnDrag(PointerEventData eventData)
     {
-        // Debug.Log("拖曳中");
-        //         //获取到鼠标的位置(鼠标水平的输入和竖直的输入以及距离)
-        //         Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
-        //         //物体的位置，屏幕坐标转换为世界坐标
-        //         Vector3 objectPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        //         //把鼠标位置传给物体
-        //         transform.position = objectPosition;
+        Background.color = _activeColor;
+        Vector3 vector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        vector.z = 90;
+        _line.SetPosition(1, vector);
+        // Debug.Log("拖曳中 " + vector);
     }
 
     //结束拖曳
@@ -40,20 +49,25 @@ public class FlagView : MonoBehaviour,
             foreach (GameObject o in eventData.hovered)
                 if (o.name.Contains("["))
                 {
+                    _line.enabled = false;
+                    Background.color = _defaultColor;
+
                     Debug.Log("from " + gameObject.name + " to " + o.name);
                     RoundxController.Instance.HandleEvent(gameObject, o);
                     return;
                 }
         }
+        _line.enabled = false;
+        Background.color = _defaultColor;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-
+        Background.color = _activeColor;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-
+        Background.color = _defaultColor;
     }
 }

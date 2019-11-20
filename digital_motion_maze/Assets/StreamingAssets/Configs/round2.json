@@ -1,6 +1,6 @@
 {
-    "StarTime": 45,
-    "StarStep": 5,
+    "StarTime": 30,
+    "StarStep": 4,
     "Matrix": {
         "Order": 3,
         "Content": [

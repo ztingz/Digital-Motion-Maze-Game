@@ -78,7 +78,7 @@ public static class MatrixTransform
 
 
     //行(列)倍乘
-    public static void Multiply(Dictionary<string, GameObject> cells, int order, Dimension dimension, int index, GameObject num)
+    public static Fraction Multiply(Dictionary<string, GameObject> cells, int order, Dimension dimension, int index, GameObject num)
     {
         Debug.Log("Multiply");
         if (index >= order)
@@ -95,6 +95,7 @@ public static class MatrixTransform
                 string aKey = string.Format(RoundxController.CELL_KEY, i, index);
                 cells[aKey].GetComponent<CellView>().Fraction *= num.GetComponent<CellView>().Fraction;
             }
+        return num.GetComponent<CellView>().Fraction;
     }
 
     public static int CanRowExpande(Dictionary<string, GameObject> cells, int order, int index)

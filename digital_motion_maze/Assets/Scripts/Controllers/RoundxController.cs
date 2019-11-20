@@ -258,14 +258,14 @@ public class RoundxController : MonoSingleton<RoundxController>
         else if (_nums.Contains(a) && _flags.ContainsValue(b))
         {
             var pb = PraseFlag(b);
-            MatrixTransform.Multiply(_cells, _layoutOrder, pb.dimension, pb.index, a);//倍乘
+            Result.GetComponent<BaseCellView>().Fraction /= MatrixTransform.Multiply(_cells, _layoutOrder, pb.dimension, pb.index, a);//倍乘
             Step.GetComponent<StepView>().increase();
             return;
         }
         else if (_flags.ContainsValue(a) && _nums.Contains(b))
         {
             var pa = PraseFlag(a);
-            MatrixTransform.Multiply(_cells, _layoutOrder, pa.dimension, pa.index, b);//倍乘
+            Result.GetComponent<BaseCellView>().Fraction /= MatrixTransform.Multiply(_cells, _layoutOrder, pa.dimension, pa.index, b);//倍乘
             Step.GetComponent<StepView>().increase();
             return;
         }
